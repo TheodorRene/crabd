@@ -59,15 +59,26 @@ fn get_header(body: &String) -> String {
                                                //TODO add better logging
 }
 
+fn get_uri(req: &str) -> String {
+    let http_verb : Vec<&str> = req.lines().next().unwrap().split(" ").collect();
+    http_verb[1].to_string()
+}
+
 fn handle_connection(mut stream: TcpStream) -> std::io::Result<()> {
     let mut streng = [0; 4];
     let mut vec = Vec::new();
 
+    //https://thepacketgeek.com/rust/tcpstream/reading-and-writing/
+    // TODO reading logic
+    // Write now it will read the same 4 bytes forever if it never ends with CLRF. 
+    // This is inconvenient. Can also check for empty bytes
     while streng != [13, 10, 13, 10] {
+        println!("{:?}", &streng);
         stream.read(&mut streng).unwrap();
         vec.extend(streng);
     }
-    println!("{}", str::from_utf8(&vec).unwrap());
+    let req = str::from_utf8(&vec).unwrap();
+    let uri = get_uri(req);
     let read_file = fs::read_to_string("index.html");
     match read_file {
         Ok(file) => {
