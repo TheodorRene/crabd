@@ -95,3 +95,21 @@ fn main() {
         }
     }
 }
+
+// Tests
+// TODO move to another file
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn exploration() {
+        assert_eq!(2 + 2, 4);
+    }
+
+    #[test]
+    fn contains_http_verb() {
+        let x = get_header(&"".to_string());
+        assert!(x.contains("HTTP"))
+    }
+}
